@@ -27,6 +27,11 @@
             # ${lib.getExe pkgs.nix-info} -m
 
             def main [cachixName?: string] {
+              if 'IN_NIX_SHELL' in $env {
+                # `nix doctor` can fail when run in a nix shell.
+                red "You are in a nix-shell. Please exit it and run me again."
+                exit 1
+              }
               nix doctor
               green "System: ${system}"
 
