@@ -47,10 +47,15 @@ def main [system: string, cachixName?: string] {
         }
     }
 
-    # TODO: test the cachix can be used, but without configuring any caches.
+    # TODO: test that cachix can be used, but without configuring any caches.
+    # Using: https://github.com/srid/nix-health/issues/2
     if ($cachixName != null) {
-        nix run nixpkgs#cachix use $cachixName
-        if $env.LAST_EXIT_CODE != "0" { red "Cachix is not configured (have you added yourself to trusted-users?)" } else { green "Cachix is configured" }
+        try { 
+            nix run "nixpkgs#cachix" use $cachixName 
+            green $"($cachixName).cachix.org will be used." 
+        } catch {
+            red $"($cachixName).cachix.org cannot be used. You must add yourself (($env.USER)) to nix.conf's trusted-users" 
+        }
     }
 
     nix doctor

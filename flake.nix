@@ -18,7 +18,15 @@
         packages.default = pkgs.nuenv.mkScript {
           name = "nix-health";
           script = ''
-            ${lib.getExe pkgs.nushell} ${./nix-health.nu} ${system}
+            def main [
+              --cachixName (-c): string # The cachix cache name to use.
+              ] {
+              if $cachixName == null {
+                ${lib.getExe pkgs.nushell} ${./nix-health.nu} ${system}
+              } else {
+                ${lib.getExe pkgs.nushell} ${./nix-health.nu} ${system} ''$cachixName
+              }
+            }
           '';
         };
       };
