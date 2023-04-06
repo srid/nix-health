@@ -6,13 +6,13 @@ def red [msg: string] {
 }
 # ${lib.getExe pkgs.nix-info} -m
 
-def main [cachixName?: string] {
+def main [system: string, cachixName?: string] {
     if 'IN_NIX_SHELL' in $env {
         # `nix doctor` can fail when run in a nix shell.
         red "You are in a nix-shell. Please exit it and run me again."
         exit 1
     }
-    green "System: ${system}"
+    green $"System: ($system)"
 
     # Nix version is not too old
     let nix_ver = (nix --version | parse "nix (Nix) {version}"  | first | get version | str trim)
@@ -27,7 +27,10 @@ def main [cachixName?: string] {
 
     # Rosetta is not detected
     if (uname) == "Darwin" {
-        let trans = (sysctl -n sysctl.proc_translated) # 1 if rosetta
+        let trans = (
+            let-env PATH = ($env.PATH | append "/usr/sbin");
+            sysctl -n sysctl.proc_translated
+            ) # 1 if rosetta
         if $trans != "0" { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
     }
 

@@ -17,9 +17,16 @@
         };
         packages.default = pkgs.nuenv.mkScript {
           name = "nix-health";
-          script = builtins.readFile ./nix-health.nu;
+          script = ''
+            nu ${./nix-health.nu} ${system}
+          '';
         };
       };
     };
 }
+
+
+
+
+
 
