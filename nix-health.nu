@@ -4,6 +4,12 @@ def green [msg: string] {
 def red [msg: string] { 
     $"(ansi red_bold)❌(ansi reset) (ansi red)($msg)(ansi reset)" 
 }
+def isArmMac [] {
+    # The simplest way to check if we are on an Apple Silicon Mac, *regardless
+    # of Rosetta*, is to look at macdep.cpu.brand_string.  cf.
+    # https://stackoverflow.com/q/65259300/55246
+    (uname) == "Darwin" and (/usr/sbin/sysctl -n machdep.cpu.brand_string) =~ "Apple"
+}
 # ${lib.getExe pkgs.nix-info} -m
 
 def main [system: string, cachixName?: string] {
@@ -26,11 +32,8 @@ def main [system: string, cachixName?: string] {
     green "Flakes is enabled"
 
     # Rosetta is not detected
-    if (uname) == "Darwin" {
-        let trans = (
-            let-env PATH = ($env.PATH | append "/usr/sbin");
-            sysctl -n sysctl.proc_translated
-            ) # 1 if rosetta
+    if isArmMac {
+        let trans = (/usr/sbin/sysctl -n sysctl.proc_translated) # 1 if rosetta
         if $trans != "0" { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
     }
 
