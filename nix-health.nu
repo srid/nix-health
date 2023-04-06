@@ -48,6 +48,8 @@ def main [system: string, cachixName?: string] {
     # Rosetta is not detected
     if isArmMac {
         if inRosetta { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
+    } else {
+        green "macOS: not an Apple Silicon Mac"
     }
 
     # TODO: test the cachix can be used, but without configuring any caches.
