@@ -16,8 +16,9 @@
           overlays = [ inputs.nuenv.overlays.nuenv ];
         };
         packages.default = pkgs.nuenv.mkScript {
-          name = "nix-health";
+          name = "nix-health.nu";
           script = ''
+            # nix-health: Check the health of your Nix install
             def main [
               --cachixName (-c): string # The cachix cache name to use.
               ] {

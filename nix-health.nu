@@ -24,6 +24,8 @@ def main [system: string, cachixName?: string] {
         red "You are in a nix-shell. Please exit it and run me again."
         exit 1
     }
+    nix doctor
+
     green $"System: ($system)"
 
     # Nix version is not too old
@@ -54,9 +56,7 @@ def main [system: string, cachixName?: string] {
             nix run "nixpkgs#cachix" use $cachixName 
             green $"($cachixName).cachix.org will be used." 
         } catch {
-            red $"($cachixName).cachix.org cannot be used. You must add yourself (($env.USER)) to nix.conf's trusted-users" 
+            red $"($cachixName).cachix.org cannot be used. You must add yourself \(($env.USER)\) to nix.conf's trusted-users"
         }
     }
-
-    nix doctor
 }
