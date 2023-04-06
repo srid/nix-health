@@ -18,7 +18,7 @@
         packages.default = pkgs.nuenv.mkScript {
           name = "nix-health";
           script = ''
-            nu ${./nix-health.nu} ${system}
+            ${lib.getExe pkgs.nushell} ${./nix-health.nu} ${system}
           '';
         };
       };
