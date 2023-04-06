@@ -1,6 +1,6 @@
 # nix-health
 
-WIP
+WIP: Check the health of your Nix install
 
 ## Usage
 
