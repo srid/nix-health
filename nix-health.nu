@@ -4,12 +4,6 @@ def green [msg: string] {
 def red [msg: string] { 
     $"(ansi red_bold)❌(ansi reset) (ansi red)($msg)(ansi reset)" 
 }
-def isArmMac [] {
-    # The simplest way to check if we are on an Apple Silicon Mac, *regardless
-    # of Rosetta*, is to look at macdep.cpu.brand_string.  cf.
-    # https://stackoverflow.com/q/65259300/55246
-    (uname) == "Darwin" and (/usr/sbin/sysctl -n machdep.cpu.brand_string) =~ "Apple"
-}
 def inRosetta [] {
     # 1 if rosetta
     (/usr/sbin/sysctl -n sysctl.proc_translated) != "0"
@@ -40,16 +34,17 @@ def main [system: string, cachixName?: string] {
         red $"Nix version ($nix_ver) is too old" 
     }
 
-
     # Flakes is enabled
     nix flake show github:srid/haskell-flake --json out> /dev/null
     green "Flakes is enabled"
 
-    # Rosetta is not detected
-    if isArmMac {
-        if inRosetta { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
-    } else {
-        green "macOS: not an Apple Silicon Mac"
+    # Make sure we are not accidentally on Rosetta.
+    if $nu.os-info.name == "macos" {
+        if $nu.os-info.arch == "aarch64" {
+            if inRosetta { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
+        } else {
+            green "macOS: not an Apple Silicon Mac"
+        }
     }
 
     # TODO: test the cachix can be used, but without configuring any caches.
