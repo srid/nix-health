@@ -10,6 +10,18 @@ def isArmMac [] {
     # https://stackoverflow.com/q/65259300/55246
     (uname) == "Darwin" and (/usr/sbin/sysctl -n machdep.cpu.brand_string) =~ "Apple"
 }
+def inRosetta [] {
+    # 1 if rosetta
+    (/usr/sbin/sysctl -n sysctl.proc_translated) != "0"
+}
+def parseNixVersion [] {
+    parse "nix (Nix) {version}"  | first | get version | str trim
+}
+# Check that version a<=b
+def semver_leq [a: string, b: string] {
+    let min_of_both = (echo $"($b)\n($a)" | split row "\n" | sort | first)
+    $min_of_both == $a
+}
 # ${lib.getExe pkgs.nix-info} -m
 
 def main [system: string, cachixName?: string] {
@@ -21,10 +33,12 @@ def main [system: string, cachixName?: string] {
     green $"System: ($system)"
 
     # Nix version is not too old
-    let nix_ver = (nix --version | parse "nix (Nix) {version}"  | first | get version | str trim)
-    let nix_min_ver = "2.13.0"
-    let min_of_both = (echo $"($nix_ver)\n($nix_min_ver)" | split row "\n" | sort | first)
-    if $min_of_both != $nix_min_ver { red $"Nix version ($nix_ver) is too old" } else { green $"Nix version ($nix_ver)" }
+    let nix_ver = (nix --version | parseNixVersion)
+    if semver_leq "2.13.0" $nix_ver { 
+        green $"Nix version ($nix_ver)" 
+    } else { 
+        red $"Nix version ($nix_ver) is too old" 
+    }
 
 
     # Flakes is enabled
@@ -33,8 +47,7 @@ def main [system: string, cachixName?: string] {
 
     # Rosetta is not detected
     if isArmMac {
-        let trans = (/usr/sbin/sysctl -n sysctl.proc_translated) # 1 if rosetta
-        if $trans != "0" { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
+        if inRosetta { red "macOS: Rosetta detected" } else { green "macOS: not in Rosetta" }
     }
 
     # TODO: test the cachix can be used, but without configuring any caches.
