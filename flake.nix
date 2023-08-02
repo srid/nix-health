@@ -7,9 +7,6 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = inputs.nixpkgs.lib.systems.flakeExposed;
-      imports = [
-        inputs.flake-parts.flakeModules.easyOverlay
-      ];
       perSystem = { pkgs, lib, system, ... }: {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
