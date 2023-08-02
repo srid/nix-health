@@ -18,6 +18,11 @@ def semver_leq [a: string, b: string] {
 }
 # ${lib.getExe pkgs.nix-info} -m
 
+def nix_config_value [key: string] {
+    let out = (nix show-config --json | from json)
+    $out | get $key | get value
+}
+
 def main [system: string, cachixName?: string] {
     if 'IN_NIX_SHELL' in $env {
         # `nix doctor` can fail when run in a nix shell.
@@ -57,6 +62,13 @@ def main [system: string, cachixName?: string] {
         } catch {
             red $"($cachixName).cachix.org cannot be used. You must add yourself \(($env.USER)\) to nix.conf's trusted-users"
         }
+    }
+
+    let num_cores = nix_config_value "max-jobs"
+    if $num_cores > 1 {
+        green $"max-jobs: ($num_cores)" 
+    } else {
+        red $"max-jobs: ($num_cores)" 
     }
 
     nix doctor
