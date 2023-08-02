@@ -13,3 +13,7 @@ nix run github:srid/nix-health
 ```sh
 nix run nixpkgs#watchexec -- -e nix -e nu nix run
 ```
+
+## Help
+
+If nix-health reports a warning or error, see https://zero-to-flakes.com/gotchas#nix-health
