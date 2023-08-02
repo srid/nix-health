@@ -24,7 +24,6 @@ def main [system: string, cachixName?: string] {
         red "You are in a nix-shell. Please exit it and run me again."
         exit 1
     }
-    nix doctor
 
     green $"System: ($system)"
 
@@ -59,4 +58,6 @@ def main [system: string, cachixName?: string] {
             red $"($cachixName).cachix.org cannot be used. You must add yourself \(($env.USER)\) to nix.conf's trusted-users"
         }
     }
+
+    nix doctor
 }
