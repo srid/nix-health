@@ -2,6 +2,9 @@
 
 🩺 Check the health of your Nix install
 
+> [!NOTE] 
+> nix-health ng is being worked on. See [here](https://github.com/juspay/nix-browser/tree/main/crates/nix_health)
+
 ## Usage
 
 ```sh
