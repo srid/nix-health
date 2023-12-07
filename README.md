@@ -2,8 +2,8 @@
 
 🩺 Check the health of your Nix install
 
-> [!NOTE] 
-> nix-health ng is being worked on. See [here](https://github.com/juspay/nix-browser/tree/main/crates/nix_health)
+> [!WARNING] 
+> This project is superceded by the new [nix-health](https://github.com/juspay/nix-browser/tree/main/crates/nix_health). You should use that.
 
 ## Usage
 
@@ -16,7 +16,3 @@ nix run github:srid/nix-health
 ```sh
 nix run nixpkgs#watchexec -- -e nix -e nu nix run
 ```
-
-## Help
-
-If nix-health reports a warning or error, see https://zero-to-flakes.com/gotchas#nix-health
