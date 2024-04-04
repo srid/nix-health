@@ -3,7 +3,7 @@
 🩺 Check the health of your Nix install
 
 > [!WARNING] 
-> This project is superceded by the new [nix-health](https://github.com/juspay/nix-browser/tree/main/crates/nix_health). You should use that.
+> This project is superceded by the new [nix-health](https://github.com/juspay/nix-health). You should use that.
 
 ## Usage
 
